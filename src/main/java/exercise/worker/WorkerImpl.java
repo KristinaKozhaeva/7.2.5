@@ -6,6 +6,7 @@ import exercise.article.Library;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class WorkerImpl implements Worker {
@@ -33,11 +34,13 @@ public class WorkerImpl implements Worker {
         return sb.toString();
     }
 
+
     @Override
     public List<Article> prepareArticles(List<Article> articles) {
-        List<Article> result = articles
-                .stream()
+        Set<String> existingTitles = library.getAllTitles().stream().collect(Collectors.toSet());
+        List<Article> result = articles.stream()
                 .filter(this::isArticleCorrect)
+                .filter(article -> !existingTitles.contains(article.getTitle()))
                 .toList();
         result.forEach(this::prepareDate);
         return result;
