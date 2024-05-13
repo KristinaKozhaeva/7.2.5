@@ -32,15 +32,15 @@ public class WorkerImplTest {
 
     @DisplayName("Проверка группировки по году написания статьи")
     @Test
-    void SortArticles() {
+    public void shouldSortArticlesByYear() {
         worker.addNewArticles(commonArticles);
         verify(mockLibrary).store(eq(2022), anyList());
         verify(mockLibrary).store(eq(2024), anyList());
     }
 
-    @DisplayName("Получаем статьи из каталога")
+    @DisplayName("Получение статьи из каталога")
     @Test
-    void testGetCatalog() {
+    public void shouldReturnCatalogWithTitles() {
         List<String> titles = Arrays.asList("Article 1", "Article 2");
         when(mockLibrary.getAllTitles()).thenReturn(titles);
         String catalog = worker.getCatalog();
@@ -50,23 +50,22 @@ public class WorkerImplTest {
         assertEquals(expectedCatalog, catalog);
     }
 
-    @DisplayName("Проверяем, что сохраняются только валидные статьи")
+    @DisplayName("Сохранение только валидных статей")
     @Test
-    void prepareArticles() {
+    public void shouldFilterInvalidArticles() {
         List<Article> preparedArticles = worker.prepareArticles(commonArticles);
         assertEquals(2, preparedArticles.size());
 
     }
-    @DisplayName("Проверяем, что проставляются даты, если они не указаны")
+    @DisplayName("Автоматическая установка даты для статей с неустановленной датой")
     @Test
-    void SetDate() {
+    public void shouldSetDateForArticlesWithMissingDates() {
         List<Article> preparedArticles = worker.prepareArticles(commonArticles);
         for (Article article: preparedArticles) {
             if (article.getCreationDate() == null) {
                 assertEquals(LocalDate.now(), article.getCreationDate());
             }
         }
-
     }
 }
 
